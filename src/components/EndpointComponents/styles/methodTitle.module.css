@@ -1,0 +1,20 @@
+.title_container {
+    display: inline-flex;
+    gap: 10px;
+    margin-bottom: 10px;
+
+    > * {
+        margin: 0;
+    }
+}
+
+.method {
+    border-radius: 5px;
+    padding-inline: 10px;
+    color: white;
+}
+
+.GET { background-color: rgb(75, 134, 202); }
+.POST { background-color: rgb(52, 211, 79); }
+.PUT { background-color: rgb(243, 174, 47); }
+.DELETE { background-color: rgb(228, 74, 74); }
