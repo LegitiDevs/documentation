@@ -7,6 +7,6 @@ sidebar_position: 1
 - todo: make a template for writing api routes
   * HTTP method `route here`
   * description
-  * arguments
+  * parameters
   * returns
   * throws
