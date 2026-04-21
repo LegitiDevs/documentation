@@ -35,6 +35,10 @@ const config = {
     locales: ['en'],
   },
 
+  future: {
+    v4: true
+  },
+
   presets: [
     [
       'classic',
