@@ -8,6 +8,8 @@ const sidebar = useSidebar({ spec })
 export default defineConfig({
   title: "Legitimoose API Docs",
   titleTemplate: ':title - Legitimoose API',
+  description: "Documentation for Legitimoose API",
+
   head: [
     ['link', { rel: 'icon', href: '/assets/legitidevs_logo.webp' }]
   ],
