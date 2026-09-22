@@ -3,15 +3,13 @@ import spec from '../src/openapi.json' with { type: "json" }
 
 export default {
     paths() {
-        return usePaths({ spec })
-            .getPathsByVerbs()
-            .map(({ operationId, summary }) => {
-                return {
-                    params: {
-                        operationId,
-                        pageTitle: `${summary} - vitepress-openapi`,
-                    },
-                }
-            })
+        return usePaths({ spec }).getPathsByVerbs().map(({ operationId, summary }) => {
+            return {
+                params: {
+                    operationId,
+                    pageTitle: `${summary} | Legitimoose API`,
+                },
+            }
+        })
     },
 }

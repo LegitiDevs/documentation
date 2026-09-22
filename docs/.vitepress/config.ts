@@ -1,5 +1,5 @@
 import { defineConfig } from 'vitepress'
-import { useSidebar } from 'vitepress-openapi'
+import { minifyHtml, useSidebar } from 'vitepress-openapi'
 import spec from '../src/openapi.json' with { type: "json" }
 import mcfunctionTmLanguage from '../src/mcfunction.tmLanguage.json' with { type: "json" }
 
@@ -19,7 +19,24 @@ export default defineConfig({
 
     logo: '/assets/legitidevs_logo.webp',
 
-    sidebar: sidebar.itemsByPaths(),
+    sidebar: sidebar.generateSidebarGroups({
+      linkPrefix: "/operations/",
+      sidebarItemTemplate: ({
+        method,
+        path,
+        title
+      }) => {
+        // @ts-ignore
+        const operation = spec.paths[path]?.[method];
+        const displayText = title || (operation ? operation.summary : path);
+        return minifyHtml(`
+            <span class="OASidebarItem group/oaOperationLink" style="display: grid; grid-template-columns: 1fr auto;">
+              <span class="text" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${displayText}</span>
+              <span class="OASidebarItem-badge OAMethodBadge--${method.toLowerCase()}">${method.toUpperCase()}</span>
+            </span>
+          `);
+      }
+    }),
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/LegitiDevs' }
