@@ -1,0 +1,19 @@
+{
+  "name": "documentation",
+  "version": "1.0.0",
+  "description": "Documentation for LegitimooseAPI",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "keywords": [],
+  "author": "LegitiDevs",
+  "license": "MIT",
+  "packageManager": "pnpm@10.33.3",
+  "devDependencies": {
+    "vitepress": "2.0.0-alpha.20"
+  }
+}

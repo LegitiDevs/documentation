@@ -1,0 +1,14 @@
+:root {
+    --legitidevs-accent: #5c2ab9;
+    --vp-c-bg: var(--legitidevs-bg);
+    --vp-c-brand-1: var(--legitidevs-accent);
+    --vp-c-brand-2: var(--legitidevs-accent);
+    --vp-c-brand-3: var(--legitidevs-accent);
+}
+
+.dark {
+    --legitidevs-bg: #1a1d30;
+    --legitidevs-accent: #a262ff;
+    --vp-code-bg: #0f111a;
+    --vp-code-block-bg: #0f111a;
+}
