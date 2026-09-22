@@ -10,11 +10,11 @@ hero:
 features:
   - icon: 🌎
     title: Worlds Endpoint
-    link: /operations/get-v4-worlds-.html
+    link: /operations/getWorld
     linkText: See endpoints
   - icon: 👥
     title: Players Endpoint
-    link: /operations/get-v4-players-.html
+    link: /operations/getPlayer
     linkText: See endpoints
 ---
 
