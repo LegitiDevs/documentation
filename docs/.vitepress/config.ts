@@ -62,6 +62,7 @@ export default defineConfig({
       }
     ]
   },
+  cleanUrls: true,
 
   transformPageData(pageData) {
       if (pageData.params?.pageTitle) {
