@@ -1,6 +1,10 @@
 import { defineConfig } from 'vitepress'
+import { useSidebar } from 'vitepress-openapi'
+import spec from '../src/openapi.json' with { type: "json" }
+import mcfunctionTmLanguage from '../src/mcfunction.tmLanguage.json' with { type: "json" }
 
-// https://vitepress.dev/reference/site-config
+const sidebar = useSidebar({ spec })
+
 export default defineConfig({
   title: "Legitimoose API Docs",
   titleTemplate: ':title - Legitimoose API',
@@ -8,7 +12,6 @@ export default defineConfig({
     ['link', { rel: 'icon', href: '/assets/legitidevs_logo.webp' }]
   ],
   themeConfig: {
-    // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: 'Home', link: '/' },
       { text: 'LegitiDevs', link: 'https://legiti.dev' }
@@ -16,15 +19,7 @@ export default defineConfig({
 
     logo: '/assets/legitidevs_logo.webp',
 
-    sidebar: [
-      {
-        text: 'Examples',
-        items: [
-          { text: 'Markdown Examples', link: '/markdown-examples' },
-          { text: 'Runtime API Examples', link: '/api-examples' }
-        ]
-      }
-    ],
+    sidebar: sidebar.itemsByPaths(),
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/LegitiDevs' }
@@ -37,6 +32,26 @@ export default defineConfig({
                '<a href="https://legiti.dev">LegitiDevs Site</a> | ' +
                '<a href="https://discord.com/invite/gnk7ZtBSjZ">LegitiDevs Discord</a> | ' +
                '<a href="https://store.legitimoose.com/">store.legitimoose.com</a>'
-    }
+    },
+  },
+
+  markdown: {
+    languages: [
+      // @ts-ignore
+      {
+        ...mcfunctionTmLanguage,
+        name: 'mcfunction',
+        aliases: ['bolt']
+      }
+    ]
+  },
+
+  transformPageData(pageData) {
+      if (pageData.params?.pageTitle) {
+          pageData.title = pageData.params.pageTitle
+      }
+      if (pageData.params?.description) {
+          pageData.description = pageData.params.description
+      }
   }
 })

@@ -6,13 +6,16 @@ hero:
   name: '<img src="/assets/legitimoose-api-logo.png" alt="Legitimoose API Logo" />'
   text: ""
   tagline: Documentation for Legitimoose API
-  actions:
-    - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
-    - theme: alt
-      text: API Examples
-      link: /api-examples
+
+features:
+  - icon: 🌎
+    title: Worlds Endpoint
+    link: /operations/get-v4-worlds-.html
+    linkText: See endpoints
+  - icon: 👥
+    title: Players Endpoint
+    link: /operations/get-v4-players-.html
+    linkText: See endpoints
 ---
 
 ## Getting Started
@@ -27,6 +30,10 @@ async function getWorlds() {
 }
 
 console.log(getWorlds()); // [{ world_uuid: "...", ... }, ...]
+```
+
+```mcfunction{1}
+http send 'https://api.legiti.dev/v4/worlds'
 ```
 
 ## Support
