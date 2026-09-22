@@ -57,7 +57,11 @@ function generateMcfunctionRequest(request) {
         httpCommand += `headers value ${JSON.stringify(headers)} `
     }
 
-    httpCommand += `send '${queryString}' ${method}`
+    httpCommand += `send '${queryString}'`
+
+    if (method != "GET") {
+        httpCommand += ` ${method}`
+    }
 
     return httpCommand
 }

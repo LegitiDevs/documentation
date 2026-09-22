@@ -15,12 +15,10 @@ export default {
         // Use the theme.
         theme.enhanceApp(ctx)
 
-        const themeApi = useTheme({
+        useTheme({
             operation: {
-                defaultBaseUrl: 'http://127.0.0.1:3000'
+                defaultBaseUrl: 'https://api.legiti.dev'
             }
         })
-
-        console.log('defaultBaseUrl now:', themeApi.getOperationDefaultBaseUrl())
     }
 } satisfies Theme
