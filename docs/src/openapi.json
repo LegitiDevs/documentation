@@ -8,7 +8,7 @@
 			"name": "MIT",
 			"url": "https://github.com/LegitiDevs/api/blob/master/LICENSE"
 		},
-		"version": "4.1.0"
+		"version": "4.2.0"
 	},
 	"components": { "schemas": {} },
 	"paths": {
@@ -92,7 +92,7 @@
 											},
 											"uuid": {
 												"type": "string",
-												"format": "uuid",
+												"format": "uuid-flexible",
 												"example": "00000000-1111-2222-3333-444444444444"
 											},
 											"name": { "type": "string" },
@@ -105,12 +105,142 @@
 												"anyOf": [
 													{
 														"type": "string",
-														"format": "uuid",
-														"examples": ["00000000-1111-2222-3333-444444444444"]
+														"format": "uuid-flexible",
+														"examples": [
+															"00000000-1111-2222-3333-444444444444",
+															"00000000111122223333444444444444"
+														]
 													},
 													{ "type": "string", "enum": ["lobby"] }
 												],
 												"description": "The UUID of the world this player is in.",
+												"~optional": true,
+												"example": "de9b06f4-39ea-4143-b0db-e4db7060b842"
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/v4/players/search": {
+			"get": {
+				"operationId": "searchWorld",
+				"summary": "Search for worlds",
+				"tags": ["players"],
+				"description": "Returns a list of players that is relevant to the search query. This searches the `name` field.",
+				"parameters": [
+					{
+						"schema": { "type": "integer", "minimum": 0 },
+						"examples": {
+							"0": { "value": 0 },
+							"1": { "value": 1 },
+							"2": { "value": 2 }
+						},
+						"in": "query",
+						"name": "offset",
+						"required": false
+					},
+					{
+						"schema": { "type": "integer", "minimum": 1 },
+						"examples": {
+							"1": { "value": 1 },
+							"2": { "value": 2 },
+							"3": { "value": 3 }
+						},
+						"in": "query",
+						"name": "limit",
+						"required": false
+					},
+					{
+						"schema": { "type": "string" },
+						"examples": {
+							"chaos box": { "value": "chaos box" },
+							"pvp": { "value": "pvp" },
+							"moose": { "value": "moose" }
+						},
+						"in": "query",
+						"name": "query",
+						"required": true,
+						"description": "A search query"
+					},
+					{
+						"schema": {
+							"type": "string",
+							"format": "player-sort-by-parameter"
+						},
+						"examples": {
+							"default": { "value": "default" },
+							"+streak": { "value": "+streak" },
+							"-legiticoins": { "value": "-legiticoins" },
+							"online": { "value": "online" }
+						},
+						"in": "query",
+						"name": "sort_by",
+						"required": false,
+						"description": "Player sorting method to use for querying.\n\nSorting method may start with `+` (ascending) or `-` (descending). \n\nDefaults to `+` if not specified.\n\n**Player sorting methods:**\n- `default`\n- `streak`\n- `legiticoins`\n- `online`\n\nThrows HTTP 400 Bad Request if the format is not followed correctly."
+					},
+					{
+						"schema": { "type": "string" },
+						"examples": {
+							"name,visits": { "value": "name,visits" },
+							"!world_uuid,!last_scraped": {
+								"value": "!world_uuid,!last_scraped"
+							}
+						},
+						"in": "query",
+						"name": "project",
+						"required": false,
+						"description": "Inlcudes or excludes specified fields.\n\nMixing inclusion and exclusion will throw HTTP 400 Bad Request."
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Default Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"type": "object",
+										"properties": {
+											"streak": {
+												"type": "integer",
+												"minimum": 0,
+												"example": 0
+											},
+											"legiticoins": {
+												"type": "integer",
+												"description": "The amount of LegitiCoins a player has. This value can overflow and be negative."
+											},
+											"uuid": {
+												"type": "string",
+												"format": "uuid-flexible",
+												"example": "00000000-1111-2222-3333-444444444444"
+											},
+											"name": { "type": "string" },
+											"rank": {
+												"type": "string",
+												"description": "The in-game rank of a player. This value is `Non` if this player does not have a rank."
+											},
+											"online": { "type": "boolean" },
+											"world": {
+												"anyOf": [
+													{
+														"type": "string",
+														"format": "uuid-flexible",
+														"examples": [
+															"00000000-1111-2222-3333-444444444444",
+															"00000000111122223333444444444444"
+														]
+													},
+													{ "type": "string", "enum": ["lobby"] }
+												],
+												"description": "The UUID of the world this player is in.",
+												"~optional": true,
 												"example": "de9b06f4-39ea-4143-b0db-e4db7060b842"
 											}
 										}
@@ -143,8 +273,15 @@
 						"description": "Inlcudes or excludes specified fields.\n\nMixing inclusion and exclusion will throw HTTP 400 Bad Request."
 					},
 					{
-						"schema": { "type": "string", "format": "uuid" },
-						"example": "00000000-1111-2222-3333-444444444444",
+						"schema": { "type": "string", "format": "uuid-flexible" },
+						"examples": {
+							"00000000-1111-2222-3333-444444444444": {
+								"value": "00000000-1111-2222-3333-444444444444"
+							},
+							"00000000111122223333444444444444": {
+								"value": "00000000111122223333444444444444"
+							}
+						},
 						"in": "path",
 						"name": "player_uuid",
 						"required": true
@@ -165,7 +302,7 @@
 										},
 										"uuid": {
 											"type": "string",
-											"format": "uuid",
+											"format": "uuid-flexible",
 											"example": "00000000-1111-2222-3333-444444444444"
 										},
 										"name": { "type": "string" },
@@ -178,12 +315,16 @@
 											"anyOf": [
 												{
 													"type": "string",
-													"format": "uuid",
-													"examples": ["00000000-1111-2222-3333-444444444444"]
+													"format": "uuid-flexible",
+													"examples": [
+														"00000000-1111-2222-3333-444444444444",
+														"00000000111122223333444444444444"
+													]
 												},
 												{ "type": "string", "enum": ["lobby"] }
 											],
 											"description": "The UUID of the world this player is in.",
+											"~optional": true,
 											"example": "de9b06f4-39ea-4143-b0db-e4db7060b842"
 										}
 									}
@@ -250,8 +391,15 @@
 						"description": "Inlcudes or excludes specified fields.\n\nMixing inclusion and exclusion will throw HTTP 400 Bad Request."
 					},
 					{
-						"schema": { "type": "string", "format": "uuid" },
-						"example": "00000000-1111-2222-3333-444444444444",
+						"schema": { "type": "string", "format": "uuid-flexible" },
+						"examples": {
+							"00000000-1111-2222-3333-444444444444": {
+								"value": "00000000-1111-2222-3333-444444444444"
+							},
+							"00000000111122223333444444444444": {
+								"value": "00000000111122223333444444444444"
+							}
+						},
 						"in": "path",
 						"name": "player_uuid",
 						"required": true
@@ -316,15 +464,18 @@
 											"owner_name": { "type": "string", "example": "Steve" },
 											"owner_uuid": {
 												"type": "string",
-												"format": "uuid",
+												"format": "uuid-flexible",
 												"example": "00000000-1111-2222-3333-444444444444"
 											},
 											"world_uuid": {
 												"anyOf": [
 													{
 														"type": "string",
-														"format": "uuid",
-														"examples": ["00000000-1111-2222-3333-444444444444"]
+														"format": "uuid-flexible",
+														"examples": [
+															"00000000-1111-2222-3333-444444444444",
+															"00000000111122223333444444444444"
+														]
 													},
 													{ "type": "string", "enum": ["lobby"] }
 												],
@@ -661,15 +812,18 @@
 											"owner_name": { "type": "string", "example": "Steve" },
 											"owner_uuid": {
 												"type": "string",
-												"format": "uuid",
+												"format": "uuid-flexible",
 												"example": "00000000-1111-2222-3333-444444444444"
 											},
 											"world_uuid": {
 												"anyOf": [
 													{
 														"type": "string",
-														"format": "uuid",
-														"examples": ["00000000-1111-2222-3333-444444444444"]
+														"format": "uuid-flexible",
+														"examples": [
+															"00000000-1111-2222-3333-444444444444",
+															"00000000111122223333444444444444"
+														]
 													},
 													{ "type": "string", "enum": ["lobby"] }
 												],
@@ -945,15 +1099,18 @@
 											"owner_name": { "type": "string", "example": "Steve" },
 											"owner_uuid": {
 												"type": "string",
-												"format": "uuid",
+												"format": "uuid-flexible",
 												"example": "00000000-1111-2222-3333-444444444444"
 											},
 											"world_uuid": {
 												"anyOf": [
 													{
 														"type": "string",
-														"format": "uuid",
-														"examples": ["00000000-1111-2222-3333-444444444444"]
+														"format": "uuid-flexible",
+														"examples": [
+															"00000000-1111-2222-3333-444444444444",
+															"00000000111122223333444444444444"
+														]
 													},
 													{ "type": "string", "enum": ["lobby"] }
 												],
@@ -1252,15 +1409,18 @@
 											"owner_name": { "type": "string", "example": "Steve" },
 											"owner_uuid": {
 												"type": "string",
-												"format": "uuid",
+												"format": "uuid-flexible",
 												"example": "00000000-1111-2222-3333-444444444444"
 											},
 											"world_uuid": {
 												"anyOf": [
 													{
 														"type": "string",
-														"format": "uuid",
-														"examples": ["00000000-1111-2222-3333-444444444444"]
+														"format": "uuid-flexible",
+														"examples": [
+															"00000000-1111-2222-3333-444444444444",
+															"00000000111122223333444444444444"
+														]
 													},
 													{ "type": "string", "enum": ["lobby"] }
 												],
@@ -1457,8 +1617,11 @@
 							"anyOf": [
 								{
 									"type": "string",
-									"format": "uuid",
-									"examples": ["00000000-1111-2222-3333-444444444444"]
+									"format": "uuid-flexible",
+									"examples": [
+										"00000000-1111-2222-3333-444444444444",
+										"00000000111122223333444444444444"
+									]
 								},
 								{ "type": "string", "enum": ["lobby"] }
 							]
@@ -1532,15 +1695,18 @@
 										"owner_name": { "type": "string", "example": "Steve" },
 										"owner_uuid": {
 											"type": "string",
-											"format": "uuid",
+											"format": "uuid-flexible",
 											"example": "00000000-1111-2222-3333-444444444444"
 										},
 										"world_uuid": {
 											"anyOf": [
 												{
 													"type": "string",
-													"format": "uuid",
-													"examples": ["00000000-1111-2222-3333-444444444444"]
+													"format": "uuid-flexible",
+													"examples": [
+														"00000000-1111-2222-3333-444444444444",
+														"00000000111122223333444444444444"
+													]
 												},
 												{ "type": "string", "enum": ["lobby"] }
 											],
@@ -1738,8 +1904,11 @@
 												"anyOf": [
 													{
 														"type": "string",
-														"format": "uuid",
-														"examples": ["00000000-1111-2222-3333-444444444444"]
+														"format": "uuid-flexible",
+														"examples": [
+															"00000000-1111-2222-3333-444444444444",
+															"00000000111122223333444444444444"
+														]
 													},
 													{ "type": "string", "enum": ["lobby"] }
 												],
@@ -1806,8 +1975,11 @@
 							"anyOf": [
 								{
 									"type": "string",
-									"format": "uuid",
-									"examples": ["00000000-1111-2222-3333-444444444444"]
+									"format": "uuid-flexible",
+									"examples": [
+										"00000000-1111-2222-3333-444444444444",
+										"00000000111122223333444444444444"
+									]
 								},
 								{ "type": "string", "enum": ["lobby"] }
 							]
@@ -1836,8 +2008,11 @@
 											"anyOf": [
 												{
 													"type": "string",
-													"format": "uuid",
-													"examples": ["00000000-1111-2222-3333-444444444444"]
+													"format": "uuid-flexible",
+													"examples": [
+														"00000000-1111-2222-3333-444444444444",
+														"00000000111122223333444444444444"
+													]
 												},
 												{ "type": "string", "enum": ["lobby"] }
 											],
@@ -1923,8 +2098,11 @@
 												"anyOf": [
 													{
 														"type": "string",
-														"format": "uuid",
-														"examples": ["00000000-1111-2222-3333-444444444444"]
+														"format": "uuid-flexible",
+														"examples": [
+															"00000000-1111-2222-3333-444444444444",
+															"00000000111122223333444444444444"
+														]
 													},
 													{ "type": "string", "enum": ["lobby"] }
 												],
@@ -1957,8 +2135,11 @@
 							"anyOf": [
 								{
 									"type": "string",
-									"format": "uuid",
-									"examples": ["00000000-1111-2222-3333-444444444444"]
+									"format": "uuid-flexible",
+									"examples": [
+										"00000000-1111-2222-3333-444444444444",
+										"00000000111122223333444444444444"
+									]
 								},
 								{ "type": "string", "enum": ["lobby"] }
 							]
